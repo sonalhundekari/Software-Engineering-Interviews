@@ -57,12 +57,3 @@ Each folder contains:
 | 29 | Linked Lists | Merge Two Sorted Lists | Easy |
 | 30 | Linked Lists | Reverse Linked List | Easy |
 | 31 | Linked Lists | LRU Cache | Medium |
-
-## 🏁 8-Week Study Plan
-
-| Week | Focus | Problems |
-|------|-------|---------|
-| 1–2 | Warm-up (no timer) | Arrays/Strings, Linked Lists |
-| 3–4 | Pattern drilling (35 min/problem) | Trees, Graphs, Stack/Queue |
-| 5–6 | Speed + pressure (25 min hard timer) | DP, Binary Search, Intervals |
-| 7–8 | Mock interviews | Full rotation, all patterns |
