@@ -7,23 +7,15 @@ and displayed live in a Blazor Server dashboard.
 
 ## A note on Spark and Flink
 
-This is the one place a direct 1:1 port isn't honestly possible:
-
 - **Apache Spark**: `.NET for Apache Spark` (Microsoft.Spark) exists but has
   been effectively unmaintained since ~2022, and its Structured Streaming
-  support was always limited. Using it here would mean shipping something
-  that doesn't reflect how Spark is actually run anywhere in production.
+  support was always limited.
 - **Apache Flink**: has no .NET API at all — Java, Scala, and Python only.
 
 **What this repo uses instead:** [Streamiz.Kafka.Net](https://github.com/LGouellec/kafka-streams-dotnet),
 an actively maintained .NET port of the Kafka Streams topology API. It's the
 idiomatic .NET-native way to do stateful stream processing on Kafka —
-windowed aggregations, state stores, the same conceptual vocabulary
-(tumbling/hopping windows, exactly-once) you'd use to discuss Spark or Flink
-in an interview, just running on a different engine. If this comes up in a
-conversation, "Spark/Flink don't have real .NET support, so I used the
-Kafka Streams equivalent" is an honest, judgment-showing answer — better
-than pretending an unmaintained binding is production-viable.
+windowed aggregations, state stores.
 
 ## Architecture
 
@@ -116,22 +108,4 @@ Same pattern as before: `infra/k8s/kafka-strimzi.yaml` deploys Kafka via the
 Strimzi operator (reuses Kubernetes operator/CRD knowledge directly), and
 `infra/k8s/serving-deployment.yaml` deploys the containerized ASP.NET Core
 serving API behind an HPA. `infra/terraform/main.tf` provisions the AKS
-cluster itself. All written to spin up for a demo and tear down afterward
-rather than run continuously.
-
-## Talking points this project supports
-
-- Same partitioning/consumer-group/windowing concepts as the Spark/Flink
-  version, but via Kafka Streams semantics — good opportunity to discuss
-  *why* a team might pick a lighter-weight Kafka Streams-style processor
-  over a full Spark/Flink cluster for a service at this scale
-  (no separate cluster to operate, runs as a normal container/pod)
-- TorchSharp vs. ML.NET tradeoff for teams doing custom neural architectures
-  in a .NET shop
-- Train/serve skew avoidance: `FeatureScaler` and `FraudClassifier` are
-  defined once in `Model/` and referenced by both `TrainModel.cs` and the
-  `Serving` project via a project reference — same normalization and
-  architecture in both paths
-- Being upfront in an interview about the honest limits of .NET's Spark/
-  Flink support, and the reasoning behind the substitution — that judgment
-  call is itself worth surfacing
+cluster itself.
