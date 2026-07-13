@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>FraudDetection.Model</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- TorchSharp = real .NET bindings to libtorch (the same engine PyTorch uses).
+         The CPU redistributable is fine for this project's scale; swap to
+         TorchSharp-cuda-windows/linux if training on GPU. -->
+    <PackageReference Include="TorchSharp" Version="0.102.5" />
+    <PackageReference Include="libtorch-cpu" Version="2.1.0.1" />
+    <PackageReference Include="CsvHelper" Version="31.0.2" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,16 @@
+@page "/"
+@namespace FraudDetection.Dashboard.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Fraud Detection — Live Dashboard</title>
+    <base href="~/" />
+</head>
+<body>
+    <component type="typeof(FraudDetection.Dashboard.Pages.Index)" render-mode="ServerPrerendered" />
+    <script src="_framework/blazor.server.js"></script>
+</body>
+</html>

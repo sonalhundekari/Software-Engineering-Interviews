@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>FraudDetection.StreamProcessor</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Streamiz.Kafka.Net is a .NET port of the Kafka Streams topology API
+         (windowed aggregations, state stores, exactly-once semantics).
+         This replaces Spark Structured Streaming / Flink from the Python
+         version -- neither has a real .NET API, so this is the idiomatic
+         .NET-native equivalent for stateful stream processing on Kafka. -->
+    <PackageReference Include="Streamiz.Kafka.Net" Version="1.6.1" />
+  </ItemGroup>
+
+</Project>

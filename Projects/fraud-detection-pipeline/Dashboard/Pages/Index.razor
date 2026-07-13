@@ -1,0 +1,57 @@
+@page "/"
+@using FraudDetection.Dashboard
+@inject PredictionStore Store
+@implements IDisposable
+
+<h1>Real-Time Fraud Detection Dashboard</h1>
+<p>Live feed from the <code>predictions</code> Kafka topic.</p>
+
+@{
+    var records = Store.Snapshot();
+    var flagged = records.Count(r => r.IsFraud == true);
+    var avgProb = records.Where(r => r.FraudProbability.HasValue).Select(r => r.FraudProbability!.Value).DefaultIfEmpty(0).Average();
+}
+
+<div class="metrics">
+    <div><strong>Transactions seen:</strong> @records.Count</div>
+    <div><strong>Flagged as fraud:</strong> @flagged</div>
+    <div><strong>Avg fraud probability:</strong> @avgProb.ToString("F3")</div>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Transaction ID</th>
+            <th>Account</th>
+            <th>Amount</th>
+            <th>Fraud Probability</th>
+            <th>Flagged</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in records.Reverse())
+        {
+            <tr style="@(r.IsFraud == true ? "background:#ffe5e5" : "")">
+                <td>@r.TransactionId</td>
+                <td>@r.AccountId</td>
+                <td>@r.Amount.ToString("F2")</td>
+                <td>@(r.FraudProbability?.ToString("F4") ?? "—")</td>
+                <td>@(r.IsFraud == true ? "⚠️ fraud" : "ok")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private Timer? _timer;
+
+    protected override void OnInitialized()
+    {
+        // Polls the in-memory store and re-renders every second. Simple
+        // and sufficient for a demo; a production dashboard would push
+        // updates via SignalR events instead of polling.
+        _timer = new Timer(_ => InvokeAsync(StateHasChanged), null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+    }
+
+    public void Dispose() => _timer?.Dispose();
+}

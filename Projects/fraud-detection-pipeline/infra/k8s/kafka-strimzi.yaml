@@ -7,12 +7,12 @@
 # Then apply this file:
 #   kubectl apply -f kafka-strimzi.yaml -n kafka
 #
-# This is intentionally sized for a demo (single broker, small storage) --
-# not a production topology. Scaling notes for interview discussion:
-#   - Production would use 3+ brokers across availability zones with
-#     replication factor 3 and min.insync.replicas 2.
-#   - Storage would be a managed disk (Azure Managed Disk / Premium SSD)
-#     via a StorageClass rather than ephemeral.
+# Sized for a demo (single broker, ephemeral storage), not production.
+# Production notes for interview discussion:
+#   - 3+ brokers across availability zones, replication factor 3,
+#     min.insync.replicas 2.
+#   - Managed disk (Azure Managed Disk / Premium SSD) via StorageClass
+#     instead of ephemeral storage.
 
 apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka

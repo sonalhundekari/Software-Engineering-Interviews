@@ -1,6 +1,6 @@
-# Deploys the FastAPI model-serving container built from serving/Dockerfile.
+# Deploys the ASP.NET Core model-serving container built from Serving/Dockerfile.
 # Build & push first, e.g.:
-#   docker build -t <your-acr>.azurecr.io/fraud-serving:latest -f serving/Dockerfile .
+#   docker build -t <your-acr>.azurecr.io/fraud-serving:latest -f Serving/Dockerfile .
 #   docker push <your-acr>.azurecr.io/fraud-serving:latest
 # Then update the image reference below and apply:
 #   kubectl apply -f serving-deployment.yaml
@@ -25,7 +25,7 @@ spec:
         - name: fraud-serving
           image: <your-acr>.azurecr.io/fraud-serving:latest
           ports:
-            - containerPort: 8000
+            - containerPort: 8080
           resources:
             requests:
               cpu: "250m"
@@ -36,13 +36,13 @@ spec:
           readinessProbe:
             httpGet:
               path: /health
-              port: 8000
+              port: 8080
             initialDelaySeconds: 5
             periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /health
-              port: 8000
+              port: 8080
             initialDelaySeconds: 10
             periodSeconds: 20
 ---
@@ -55,7 +55,7 @@ spec:
     app: fraud-serving
   ports:
     - port: 80
-      targetPort: 8000
+      targetPort: 8080
   type: ClusterIP
 ---
 apiVersion: autoscaling/v2
