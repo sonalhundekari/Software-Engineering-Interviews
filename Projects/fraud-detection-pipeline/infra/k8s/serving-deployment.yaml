@@ -1,0 +1,78 @@
+# Deploys the FastAPI model-serving container built from serving/Dockerfile.
+# Build & push first, e.g.:
+#   docker build -t <your-acr>.azurecr.io/fraud-serving:latest -f serving/Dockerfile .
+#   docker push <your-acr>.azurecr.io/fraud-serving:latest
+# Then update the image reference below and apply:
+#   kubectl apply -f serving-deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fraud-serving
+  labels:
+    app: fraud-serving
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fraud-serving
+  template:
+    metadata:
+      labels:
+        app: fraud-serving
+    spec:
+      containers:
+        - name: fraud-serving
+          image: <your-acr>.azurecr.io/fraud-serving:latest
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fraud-serving
+spec:
+  selector:
+    app: fraud-serving
+  ports:
+    - port: 80
+      targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: fraud-serving-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: fraud-serving
+  minReplicas: 2
+  maxReplicas: 6
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70

@@ -1,0 +1,64 @@
+# Deploys a small Kafka cluster on AKS using the Strimzi operator.
+#
+# Prereqs:
+#   helm repo add strimzi https://strimzi.io/charts/
+#   helm install strimzi-operator strimzi/strimzi-kafka-operator -n kafka --create-namespace
+#
+# Then apply this file:
+#   kubectl apply -f kafka-strimzi.yaml -n kafka
+#
+# This is intentionally sized for a demo (single broker, small storage) --
+# not a production topology. Scaling notes for interview discussion:
+#   - Production would use 3+ brokers across availability zones with
+#     replication factor 3 and min.insync.replicas 2.
+#   - Storage would be a managed disk (Azure Managed Disk / Premium SSD)
+#     via a StorageClass rather than ephemeral.
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: fraud-detection-kafka
+spec:
+  kafka:
+    version: 3.7.0
+    replicas: 1
+    listeners:
+      - name: plain
+        port: 9092
+        type: internal
+        tls: false
+    config:
+      offsets.topic.replication.factor: 1
+      transaction.state.log.replication.factor: 1
+      transaction.state.log.min.isr: 1
+      default.replication.factor: 1
+      min.insync.replicas: 1
+    storage:
+      type: ephemeral
+  zookeeper:
+    replicas: 1
+    storage:
+      type: ephemeral
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: transactions
+  labels:
+    strimzi.io/cluster: fraud-detection-kafka
+spec:
+  partitions: 6
+  replicas: 1
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: predictions
+  labels:
+    strimzi.io/cluster: fraud-detection-kafka
+spec:
+  partitions: 6
+  replicas: 1
