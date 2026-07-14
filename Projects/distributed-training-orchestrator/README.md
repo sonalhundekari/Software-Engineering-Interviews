@@ -100,23 +100,12 @@ kubectl delete pod -l trainingjob=mnist-demo,rank=0
 # ...watch the controller recreate it and resume from the last checkpoint
 ```
 
-## What to show in the demo video
-
-See `docs/VIDEO_SCRIPT.md` for a full narration script. Short version:
-submit a job, show workers training in parallel, kill a worker pod on
-camera, show it resume from checkpoint instead of restarting from epoch 0,
-then show the CR status reflecting real-time progress via `kubectl get
-trainingjob -o yaml`.
-
 ## Status of this scaffold
 
-This is a first working slice, not a finished platform. Deliberately out of
-scope for v1 (call these out as "future work" in interviews — it shows you
-know the difference between a demo and a production system):
+This is a first working slice, not a finished platform. 
 
 - Gang scheduling / all-or-nothing worker admission
 - Elastic worker count (currently fixed at job submission)
 - Multi-tenant resource quotas and priority classes
 - Metrics export (Prometheus) for loss/throughput per rank
-- A real distributed data loader (this demo shards MNIST by rank, not a
-  general-purpose sampler)
+- A real distributed data loader
