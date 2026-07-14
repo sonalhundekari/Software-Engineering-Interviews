@@ -1,9 +1,7 @@
 # Distributed Training Orchestrator
 
 A Kubernetes-native controller (C#) that schedules, checkpoints, and resumes
-distributed TorchSharp training jobs. Built to demonstrate ML **infrastructure**
-engineering — scheduling, fault tolerance, resource isolation — rather than
-model quality itself.
+distributed TorchSharp training jobs. Built to demonstrate scheduling, fault tolerance, resource isolation.
 
 Runs entirely on your laptop via `kind` (Kubernetes-in-Docker). No cloud
 account needed to develop or record a demo; the same manifests deploy to AKS
@@ -11,12 +9,10 @@ unchanged (just swap the image registry).
 
 ## Why this project exists
 
-Most "ML portfolio" projects show off a model. This one shows off the platform
-underneath it: a custom resource (`TrainingJob`), a reconciliation loop that
+A custom resource (`TrainingJob`), a reconciliation loop that
 watches for changes and drives cluster state toward the desired spec, worker
 pods that checkpoint to a shared volume, and automatic resume-from-checkpoint
-on pod failure. That's the muscle that transfers directly to Kubernetes
-Platform / infra-adjacent Staff roles.
+on pod failure.
 
 ## Architecture
 
@@ -53,9 +49,7 @@ Platform / infra-adjacent Staff roles.
 
 Each worker is a plain Kubernetes `Job` (rank baked in via env var), so the
 controller doesn't reinvent scheduling — it composes primitives Kubernetes
-already gives you. That's a deliberate design choice worth calling out in an
-interview: prefer composing built-in primitives (Jobs, PVCs, ConfigMaps) over
-reimplementing them in the CRD controller.
+already gives you. 
 
 ## Repo layout
 
