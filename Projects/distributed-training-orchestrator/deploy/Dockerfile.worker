@@ -1,0 +1,12 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY src/TrainingOrchestrator.Worker/ ./TrainingOrchestrator.Worker/
+WORKDIR /src/TrainingOrchestrator.Worker
+RUN dotnet publish -c Release -o /app
+
+# TorchSharp's native libtorch dependency needs the full runtime image, not
+# -alpine or -jammy-chiseled, or you'll chase missing .so files for an hour.
+FROM mcr.microsoft.com/dotnet/runtime:8.0
+WORKDIR /app
+COPY --from=build /app .
+ENTRYPOINT ["dotnet", "TrainingOrchestrator.Worker.dll"]

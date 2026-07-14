@@ -1,0 +1,16 @@
+apiVersion: ml.sonal.dev/v1
+kind: TrainingJob
+metadata:
+  name: mnist-demo
+  labels:
+    trainingjob: mnist-demo
+spec:
+  image: training-orchestrator/worker:local
+  workerCount: 3
+  epochs: 10
+  checkpointInterval: 1
+  datasetPvcName: mnist-dataset-pvc
+  checkpointPvcName: mnist-checkpoints-pvc
+  resources:
+    cpu: "1"
+    memory: "1Gi"

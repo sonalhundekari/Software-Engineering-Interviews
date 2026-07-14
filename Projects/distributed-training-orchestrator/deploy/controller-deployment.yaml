@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: training-orchestrator-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: training-orchestrator-controller
+  template:
+    metadata:
+      labels:
+        app: training-orchestrator-controller
+    spec:
+      serviceAccountName: training-orchestrator-controller
+      containers:
+        - name: controller
+          image: training-orchestrator/controller:local
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: WATCH_NAMESPACE
+              value: default
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
