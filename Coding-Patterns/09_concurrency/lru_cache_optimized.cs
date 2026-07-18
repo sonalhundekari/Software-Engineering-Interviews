@@ -32,7 +32,9 @@ public class LRUCacheOptimized
 
     public int Get(int key)
     {
-        if (!_map.TryGetValue(key, out var node)) return -1;
+        if (!_map.TryGetValue(key, out var node)) 
+            return -1;
+            
         // Move to front (most recently used)
         _list.Remove(node);
         _list.AddFirst(node);
