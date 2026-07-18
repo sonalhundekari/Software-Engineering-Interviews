@@ -28,6 +28,32 @@ public class ValidateBST
                Validate(node.Right, node.Val, maxVal);
     }
 
+    public bool IsValidBSTOptimized(TreeNode root)
+    {
+        var stack = new Stack<TreeNode>();
+        var current = root;
+        long prev = long.MinValue;
+
+        while (current != null || stack.Count > 0)
+        {
+            // Walk down all the way left
+            while (current != null)
+            {
+                stack.Push(current);
+                current = current.Left;
+            }
+
+            // Visit the smallest unvisited node
+            current = stack.Pop();
+            if (current.Val <= prev) return false;
+            prev = current.Val;
+
+            // Move to right subtree
+            current = current.Right;
+        }
+        return true;
+    }
+
     public static void Main()
     {
         var sol = new ValidateBST();

@@ -44,4 +44,61 @@ public class WordLadder
         }
         return 0;
     }
+
+
+    public int LadderLengthOptimized(string beginWord, string endWord, IList<string> wordList)
+    {
+        var dict = new HashSet<string>(wordList);
+        if (!dict.Contains(endWord)) return 0;
+
+        var beginSet = new HashSet<string> { beginWord };
+        var endSet = new HashSet<string> { endWord };
+        var visited = new HashSet<string>();
+        int length = 1;
+
+        while (beginSet.Count > 0 && endSet.Count > 0)
+        {
+            // Always expand the smaller frontier — keeps search balanced
+            if (beginSet.Count > endSet.Count)
+                (beginSet, endSet) = (endSet, beginSet);
+
+            var nextSet = new HashSet<string>();
+            foreach (var word in beginSet)
+            {
+                var chars = word.ToCharArray();
+                for (int i = 0; i < chars.Length; i++)
+                {
+                    char original = chars[i];
+                    for (char c = 'a'; c <= 'z'; c++)
+                    {
+                        if (c == original) continue;
+                        chars[i] = c;
+                        var next = new string(chars);
+
+                        // If the two frontiers touched, we're done
+                        if (endSet.Contains(next)) return length + 1;
+
+                        if (dict.Contains(next) && !visited.Contains(next))
+                        {
+                            nextSet.Add(next);
+                            visited.Add(next);
+                        }
+                    }
+                    chars[i] = original;
+                }
+            }
+            beginSet = nextSet;
+            length++;
+        }
+        return 0;
+    }
+
+    public static void Main()
+    {
+        var sol = new WordLadderOptimized();
+        Console.WriteLine(sol.LadderLength("hit", "cog",
+            new[] { "hot","dot","dog","lot","log","cog" })); // 5
+        Console.WriteLine(sol.LadderLength("hit", "cog",
+            new[] { "hot","dot","dog","lot","log" }));       // 0
+    }
 }
