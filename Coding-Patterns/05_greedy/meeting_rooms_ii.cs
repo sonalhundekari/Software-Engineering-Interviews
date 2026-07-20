@@ -37,7 +37,8 @@ public class MeetingRoomsIIOptimized
     public int MinMeetingRoomsChronological(int[][] intervals)
     {
         int n = intervals.Length;
-        if (n == 0) return 0;
+        if (n == 0) 
+            return 0;
 
         var starts = intervals.Select(i => i[0]).OrderBy(x => x).ToArray();
         var ends   = intervals.Select(i => i[1]).OrderBy(x => x).ToArray();
@@ -45,9 +46,12 @@ public class MeetingRoomsIIOptimized
         int rooms = 0, endPtr = 0;
         for (int i = 0; i < n; i++)
         {
-            if (starts[i] < ends[endPtr]) rooms++;    // need a new room
-            else endPtr++;                             // reuse: an earlier meeting ended
+            if (starts[i] < ends[endPtr]) 
+                rooms++;    // need a new room
+            else 
+                endPtr++;                             // reuse: an earlier meeting ended
         }
+        
         return rooms;
     }
 
