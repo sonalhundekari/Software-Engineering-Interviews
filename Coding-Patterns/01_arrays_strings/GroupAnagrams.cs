@@ -1,5 +1,4 @@
-// LeetCode 49 - Group Anagrams
-// Difficulty: Medium
+// Group Anagrams
 // Pattern: HashMap with counting key
 //
 // Original approach: sort each word → O(k log k) per word
@@ -54,25 +53,38 @@ public class GroupAnagrams
     // Alternative: even simpler key using a tuple-like string
     public IList<IList<string>> SolveSimple(string[] strs)
     {
-        var groups = new Dictionary<string, List<string>>();
-        foreach (var word in strs)
-        {
-            var counts = new int[26];
-            foreach (var c in word) 
-                counts[c - 'a']++;
-            var key = string.Join(",", counts);  // e.g. "1,0,0,1,2,..."
-            if (!groups.TryGetValue(key, out var list))
-                groups[key] = list = new List<string>();
-            list.Add(word);
+        // Dictionary to store anagrams groups by character count signature
+        Dictionary<string, List<string>> map = new Dictionary<string, List<string>>();
+        
+        foreach (string s in strs) {
+            // Initialize the character count
+            int[] count = new int[26];
+            foreach (char c in s) {
+                count[c - 'a']++;
+            }
+            
+            // Create a signature string from the character count
+            string key = string.Join(",", count);
+            
+            // If the signature is not in the map, add it
+            if (!map.ContainsKey(key)) {
+                map[key] = new List<string>();
+            }
+            
+            // Add the original string to the correct anagram group
+            map[key].Add(s);
         }
-        return groups.Values.Cast<IList<string>>().ToList();
+        
+        // Convert the map values to a list of lists
+        return new List<IList<string>>(map.Values);
     }
 
     public static void Main()
     {
         var sol = new GroupAnagrams();
         var result = sol.Solve(new[] { "eat", "tea", "tan", "ate", "nat", "bat" });
-        foreach (var g in result) Console.WriteLine(string.Join(", ", g));
+        foreach (var g in result) 
+            Console.WriteLine(string.Join(", ", g));
     }
 }
 
